@@ -1,0 +1,21 @@
+numerical_params:
+  num_neighbors: 2
+  num_steps: 1000
+  increment: 0.001
+  domain:
+    start: 0
+    end: 1
+  
+
+weight_function:
+  type: "default"  # or "custom"
+
+input_data:
+  path: "data/cuad19.txt"
+
+internal_nodes_data:
+  path: "data/internal.txt"
+
+equation_params:
+  mu: 1.0
+  initial_condition: "4*np.pi"

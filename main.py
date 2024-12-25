@@ -1,12 +1,9 @@
-# main.py
-
 def main():
     """
-    Función principal del programa.
+    TBD
     """
-    print("Bienvenido a mi programa.")
+    pass
     
 
-# Punto de entrada del programa
 if __name__ == "__main__":
     main()
