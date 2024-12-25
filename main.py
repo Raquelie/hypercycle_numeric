@@ -1,8 +1,7 @@
+from examples.example_1 import run_example
+
 def main():
-    """
-    TBD
-    """
-    pass
+    run_example()
     
 
 if __name__ == "__main__":

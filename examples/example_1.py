@@ -1,7 +1,8 @@
-import sys
-from pathlib import Path
-sys.path.append(str(Path(__file__).parent.parent))
+# import sys
+# from pathlib import Path
+# sys.path.append(str(Path(__file__).parent.parent))
 
+from pathlib import Path
 import numpy as np
 import yaml
 import matplotlib.pyplot as plt
@@ -9,8 +10,9 @@ from gfdm.core import GFDMSolver
 
 
 def load_config():
-    """Load configuration file yml"""
-    with open("config.yml", 'r') as f:
+    """Load configuration from YAML file"""
+    config_path = Path(__file__).parent / "config.yml"  # Get path relative to this script
+    with open(config_path, 'r') as f:
         config = yaml.safe_load(f)
     
     # Convert the string to actual numpy expression
@@ -106,6 +108,3 @@ def run_example():
     ax.set_zlabel('l')
     plt.show()
 
-
-if __name__ == "__main__":
-    run_example()
