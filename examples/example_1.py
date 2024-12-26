@@ -34,7 +34,7 @@ def load_points(file_path):
         raise
 
 
-def solve_pde(cfg, solver, x, internal_nodes, num_pasos, inc):
+def solve_pde(cfg, solver, x, num_pasos, inc):
     """Specific code for the PDE of the example
         TODO generalize with config"""
     
@@ -42,7 +42,7 @@ def solve_pde(cfg, solver, x, internal_nodes, num_pasos, inc):
     stars = solver.create_stars(x)
     solver.plot_stars(x, stars)
 
-    _, coeffs_for_second_derivative = solver.build_matrices(x, internal_nodes, stars)
+    _, coeffs_for_second_derivative = solver.build_matrices(x, stars)
 
     # Initialize solutions
     sol = np.ones(len(x)) * cfg['equation_params']['initial_condition']
@@ -51,17 +51,18 @@ def solve_pde(cfg, solver, x, internal_nodes, num_pasos, inc):
     # Time derivative loop
     for n in range(num_pasos):
         # t = n * inc
-        for i in range(len(internal_nodes)):
+        # Exclude 1st and last nodes for the boundary conditions
+        for i in range(1, len(x)):
             # Get neighbors from stars
-            neighbors = np.where(stars[internal_nodes[i]] == 1)[0]
-            u = sol[neighbors] - sol[internal_nodes[i]] # has the size of the number of neighbors and contains distances
+            neighbors = np.where(stars[i] == 1)[0]
+            u = sol[neighbors] - sol[i] # has the size of the number of neighbors and contains distances
             
-            current_u = sol[internal_nodes[i]]
+            current_u = sol[i]
             # Equation u' = g(u) = d2u/dx2 + mu* u *(1-u)
             second_derivative = coeffs_for_second_derivative[i] @ u
             g_u = second_derivative + mu * current_u * (1 - current_u)
             
-            sol[internal_nodes[i]] += g_u * inc
+            sol[i] += g_u * inc
         
         # Boundary conditions (Neumann)
         sol[0] = sol[1]
@@ -87,10 +88,9 @@ def run_example():
     
     # Generate points
     x = load_points(cfg['input_data']['path'])
-    internal_nodes = load_points(cfg['internal_nodes_data']['path']).astype(int)
 
     # Solve PDE
-    sol = solve_pde(cfg, solver, x, internal_nodes, num_steps, inc)
+    sol = solve_pde(cfg, solver, x, num_steps, inc)
     
     # 3D Plotting
     T = inc * num_steps

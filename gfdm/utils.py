@@ -18,7 +18,7 @@ def create_stars(x, num_neighbors=2):
     return stars
 
 
-def build_matrices(x, stars, internal_nodes, weight_function):
+def build_matrices(x, stars, weight_function):
     """
     Build coefficientes for first and second derivatives
     
@@ -28,8 +28,6 @@ def build_matrices(x, stars, internal_nodes, weight_function):
         Points coordinates
     stars : array_like
         Binary matrix where stars[i,j] = 1 if j is in star of i
-    internal_nodes : array_like
-        Array of interior points indices
     weight_function : callable
         Function to calculate weights
     
@@ -38,22 +36,22 @@ def build_matrices(x, stars, internal_nodes, weight_function):
     coeffs_for_first_derivative : ndarray
     coeffs_for_second_derivative : ndarray
     """
-    num_internal_nodes = len(internal_nodes)
     total_nodes = len(x)
-    coeffs_for_first_derivative = []
-    coeffs_for_second_derivative = []
+    # Add 0 for the first node which is a border
+    coeffs_for_first_derivative = [None]
+    coeffs_for_second_derivative = [None]
     
-    for i_node in range(num_internal_nodes):
+    for i_node in range(1, total_nodes): # Exclude borders
         C = np.zeros((2, 2))
         cont = 0
 
-        n_neighbors = stars[internal_nodes[i_node]].sum()
+        n_neighbors = stars[i_node].sum()
         w_ent = np.zeros((2, n_neighbors))
         
         # Implement algorithm
         for node in range(total_nodes):
-            if stars[internal_nodes[i_node], node] == 1:
-                h = x[node] - x[internal_nodes[i_node]]
+            if stars[i_node, node] == 1:
+                h = x[node] - x[i_node]
                 d = weight_function(h)
                 ent = np.array([h, h*h/2])
                 w_ent[:, cont] = ent * d
@@ -67,6 +65,10 @@ def build_matrices(x, stars, internal_nodes, weight_function):
         coeffs_for_first_derivative.append(coeffs_for_derivatives[0,:])
         coeffs_for_second_derivative.append(coeffs_for_derivatives[1,:])
     
+    # Add 0 for the last node which is a border
+    coeffs_for_first_derivative.append(None)
+    coeffs_for_second_derivative.append(None)
+
     return coeffs_for_first_derivative, coeffs_for_second_derivative
 
 

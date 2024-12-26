@@ -8,12 +8,12 @@ class GFDMSolver:
     def __init__(self, num_neighbors=2):
         self.num_neighbors = num_neighbors
     
-    def build_matrices(self, x, internal_nodes, stars, weight_fn=None):
+    def build_matrices(self, x, stars, weight_fn=None):
         """Build matrices for GFDM computation"""
         if weight_fn is None:
             weight_fn = weight_function
             
-        return build_matrices(x, stars, internal_nodes, weight_fn)
+        return build_matrices(x, stars, weight_fn)
     
     def plot_stars(self, x, stars):
         "Plot stars and save graph"
