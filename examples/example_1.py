@@ -67,7 +67,7 @@ def solve_pde(cfg, solver, x, internal_nodes, num_pasos, inc):
             
             sol[internal_nodes[i]] += g_u * inc
         
-        # Boundary conditions (Dirichlet)
+        # Boundary conditions (Neumann)
         sol[0] = sol[1]
         sol[-1] = sol[-2]
 
