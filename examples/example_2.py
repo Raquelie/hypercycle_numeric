@@ -42,7 +42,7 @@ def forcing_term(x, t, mu):
     return x**2 - 2 - mu*x**2*(1 - x**2*np.exp(t))
 
 
-def solve_pde(cfg, solver, x, internal_nodes, num_pasos, inc):
+def solve_pde(cfg, solver, x, num_pasos, inc):
     """Specific code for the PDE of the example
         TODO generalize with config"""
     
@@ -50,7 +50,7 @@ def solve_pde(cfg, solver, x, internal_nodes, num_pasos, inc):
     stars = solver.create_stars(x)
     solver.plot_stars(x, stars)
 
-    _, coeffs_for_second_derivative = solver.build_matrices(x, internal_nodes, stars)
+    _, coeffs_for_second_derivative = solver.build_matrices(x, stars)
 
     # Initialize solutions
     # Use the initial condition of the exact solution
@@ -60,17 +60,17 @@ def solve_pde(cfg, solver, x, internal_nodes, num_pasos, inc):
     # Time derivative loop
     for n in range(num_pasos):
         t = n * inc
-        for i in range(len(internal_nodes)):
+        for i in range(1, len(x)):
             # Get neighbors from stars
-            neighbors = np.where(stars[internal_nodes[i]] == 1)[0]
-            u = sol[neighbors] - sol[internal_nodes[i]] # has the size of the number of neighbors and contains distances
+            neighbors = np.where(stars[i] == 1)[0]
+            u = sol[neighbors] - sol[i] # has the size of the number of neighbors and contains distances
             
-            current_u = sol[internal_nodes[i]]
+            current_u = sol[i]
             # Equation u' = g(u) = d2u/dx2 + mu* u *(1-u) + f
-            f = forcing_term(x[internal_nodes[i]], t, mu)
+            f = forcing_term(x[i], t, mu)
             second_derivative = coeffs_for_second_derivative[i] @ u
             g_u = second_derivative + mu * current_u * (1 - current_u) + f
-            sol[internal_nodes[i]] += g_u * inc
+            sol[i] += g_u * inc
         
         # Boundary conditions (Dirichlet)
         sol[0] = exact_solution(0, t)
@@ -96,10 +96,9 @@ def run_example():
     
     # Generate points
     x = load_points(cfg['input_data']['path'])
-    internal_nodes = load_points(cfg['internal_nodes_data']['path']).astype(int)
 
     # Solve PDE
-    sol = solve_pde(cfg, solver, x, internal_nodes, num_steps, inc)
+    sol = solve_pde(cfg, solver, x, num_steps, inc)
     
     # 2D Plotting
     t_final = num_steps * inc
