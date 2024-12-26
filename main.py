@@ -1,9 +1,9 @@
-from examples.example_1 import run_example
-from examples.example_2 import run_example
+from examples.example_1 import run_example as ex_1
+from examples.example_2 import run_example as ex_2
 
 
 def main():
-    run_example()
+    ex_2()
     
 
 if __name__ == "__main__":

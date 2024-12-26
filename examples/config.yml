@@ -1,6 +1,6 @@
 numerical_params:
   num_neighbors: 2
-  num_steps: 1000
+  num_steps: 100
   increment: 0.001
   domain:
     start: 0
@@ -8,7 +8,7 @@ numerical_params:
   
 
 weight_function:
-  type: "default"  # or "custom"
+  type: "default"
 
 input_data:
   path: "data/cuad19.txt"

@@ -81,29 +81,30 @@ def plot_stars(x, stars):
     stars : array_like
         Binary matrix where stars[i,j] = 1 if j is in star of i
     """
-    plt.figure(figsize=(12, 4))
+    plt.figure(figsize=(12, 2))
     num_points = len(x)
     
     # Plot points
-    plt.plot(x, np.zeros_like(x), 'ko', label='Points')
-    
-    # Plot connections for each star
-    for i in range(num_points):
-        neighbors = np.where(stars[i] == 1)[0]
-        for neighbor in neighbors:
-            # Draw line from point i to its neighbor
-            plt.plot([x[i], x[neighbor]], [0, 0], 'b-', alpha=0.5)
+    plt.plot(x, np.zeros_like(x), 'b*', label='Mesh')
+    plt.axhline(y=0, color='black', linewidth=0.5, linestyle='-')
+    # # Plot connections for each star
+    # for i in range(num_points):
+    #     neighbors = np.where(stars[i] == 1)[0]
+    #     for neighbor in neighbors:
+    #         # Draw line from point i to its neighbor
+    #         plt.plot([x[i], x[neighbor]], [0, 0], 'b-', alpha=0.5)
             
-        # Highlight central point of current star
-        plt.plot(x[i], 0, 'ro', markersize=8)
-        plt.text(x[i], 0.1, f'Point {i}')
+    #     # Highlight central point of current star
+    #     plt.plot(x[i], 0, 'ro', markersize=8)
+    #     plt.text(x[i], 0.1, f'Point {i}')
         
-        # Add small vertical offset for visualization
-        plt.plot(x[neighbors], np.zeros_like(neighbors), 'go', markersize=6)
+    #     # Add small vertical offset for visualization
+    #     plt.plot(x[neighbors], np.zeros_like(neighbors), 'go', markersize=6)
     
     plt.grid(True)
     plt.title('Stars Visualization')
     plt.xlabel('x')
+    plt.gca().yaxis.set_visible(False)
     plt.legend()
     
     # Create output directory if it doesn't exist
