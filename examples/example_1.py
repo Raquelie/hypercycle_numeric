@@ -1,7 +1,3 @@
-# import sys
-# from pathlib import Path
-# sys.path.append(str(Path(__file__).parent.parent))
-
 from pathlib import Path
 import numpy as np
 import yaml
@@ -67,7 +63,7 @@ def solve_pde(cfg, solver, x, internal_nodes, num_pasos, inc):
             
             sol[internal_nodes[i]] += g_u * inc
         
-        # Boundary conditions (Dirichlet)
+        # Boundary conditions (Neumann)
         sol[0] = sol[1]
         sol[-1] = sol[-2]
 
