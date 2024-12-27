@@ -1,0 +1,20 @@
+numerical_params:
+  num_neighbors: 2
+  num_time_steps: 25000
+  time_increment: 0.00032
+  domain:
+    start: 0
+    end: 1
+  
+weight_function:
+  type: "default"
+
+input_data:
+  path: "data/one_molecule.txt"
+
+equation_params:
+  d: 0.02          # diffusion coefficient (smallest from paper)
+  a: 1.0           # reaction rate
+  p: 1.0           # growth rate exponent
+  # initial_condition: "0.35 + 0.3*np.cos(np.pi*x)"  # initial concentration
+  initial_condition: "4*np.pi"
