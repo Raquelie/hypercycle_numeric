@@ -41,8 +41,7 @@ def solve_pde(cfg, solver, x, num_steps, dt):
 
     # Initialize solution
     ic_str = cfg['equation_params']['initial_condition']
-    # sol = eval(ic_str, {'np': np, 'x': x})
-    sol = eval(ic_str, {'np': np})*np.ones(len(x))
+    sol = eval(ic_str, {'np': np, 'x': x})*np.ones(len(x))
     sol_all_data = np.zeros((num_steps, len(x)))
 
     print(f"Initial max sol = {np.max(sol)}, min sol = {np.min(sol)}")
@@ -50,8 +49,10 @@ def solve_pde(cfg, solver, x, num_steps, dt):
     for n in range(num_steps):
         old_sol = sol.copy()
         
-        # Calculate f1(t)
+        # Calculate f1(t) = int(a*v^(p+1)*dx) for x in domain
+        # This is a global term
         v_powered = (old_sol)**(p+1)  
+        # Use numpy's trapezoid rule, a is constant
         f1 = a * np.trapz(v_powered, x)
         
         for i in range(1, len(x)-1):
@@ -60,7 +61,7 @@ def solve_pde(cfg, solver, x, num_steps, dt):
             
             laplacian = coeffs_for_second_derivative[i] @ u
             
-            # More stable reaction term calculation
+            # Reaction term: v*(a*v^p - f1)
             v_term = (old_sol[i])**p
             reaction = old_sol[i] * (a * v_term - f1)
             
@@ -74,14 +75,14 @@ def solve_pde(cfg, solver, x, num_steps, dt):
                 return sol_all_data
 
         # Neumann BCs
-        # Should have an extra node on each side! TODO add this
+        # Should have an extra node on each side! TODO: add this
         sol[0] = sol[1]
         sol[-1] = sol[-2]
         
         sol_all_data[n, :] = sol
 
-        # Data checks
-        if n % 10 == 0: 
+        # Data checks, because it tends to go to infinity :(
+        if n % 100 == 0: 
             print(f"Step {n}: max={np.max(sol):.6f}, min={np.min(sol):.6f}, f1={f1:.6f}")
 
     return sol_all_data
@@ -104,7 +105,6 @@ def run_model():
 
     # Solve PDE
     sol = solve_pde(cfg, solver, x, num_steps, inc)
-    t = np.linspace(0, inc * num_steps, num_steps)
 
     # 3D Plotting
     T = inc * num_steps
@@ -116,6 +116,9 @@ def run_model():
     ax.set_xlabel('t')
     ax.set_ylabel('x')
     ax.set_zlabel('v')
+    ax.set_xlim(np.max(T), 0)  # Reverse t axis direction
+    ax.set_ylim(1, 0)  # Reverse x axis direction
+    # ax.set_zlim(0, 8)
     plt.show()
     
     
