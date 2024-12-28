@@ -61,7 +61,7 @@ def solve_pde(cfg, solver, x, num_steps, dt):
             
             laplacian = coeffs_for_second_derivative[i] @ u
             
-            # Reaction term: v*(a*v^p - f1)
+            # Reaction term plus global regulation: v*(a*v^p - f1)
             v_term = (old_sol[i])**p
             reaction = old_sol[i] * (a * v_term - f1)
             
@@ -89,6 +89,7 @@ def solve_pde(cfg, solver, x, num_steps, dt):
 
 
 def run_model():
+    """Run the model and plot the solution"""
     # Load configuration
     cfg = load_config()
 
