@@ -1,7 +1,8 @@
 # Autocathalitic system 
 
 ## Usage
-- Check `config.yml` for parameters
+- Check `hypercycle_numeric/config.yml` for parameters
+- Code is in `hypercycle_numeric/one_mol_autocathalitic.py`
 - Run with main.py after checking the call to the function is in the file and uncommented
 
 ## Description
