@@ -89,6 +89,7 @@ def solve_pde(cfg, solver, x, num_steps, dt):
 
 
 def run_model():
+    """Run the model and plot the solution"""
     # Load configuration
     cfg = load_config()
 
