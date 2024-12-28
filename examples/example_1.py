@@ -101,6 +101,6 @@ def run_example():
     ax.plot_surface(T, X, sol, cmap='viridis')
     ax.set_xlabel('t')
     ax.set_ylabel('x')
-    ax.set_zlabel('l')
+    ax.set_zlabel('u')
     plt.show()
 
