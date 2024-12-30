@@ -43,35 +43,31 @@ def solve_pde(cfg, solver, x, num_steps, dt):
     ic_str = cfg['equation_params']['initial_condition']
     sol = eval(ic_str, {'np': np, 'x': x})*np.ones(len(x))
     sol_all_data = np.zeros((num_steps, len(x)))
-
+    sol_all_data[0, :] = sol
     print(f"Initial max sol = {np.max(sol)}, min sol = {np.min(sol)}")
 
-    for n in range(num_steps):
-        old_sol = sol.copy()
-        
+    for n in range(1, num_steps):
+        current_v = sol.copy()
         # Calculate f1(t) = int(a*v^(p+1)*dx) for x in domain
         # This is a global term
-        v_powered = (old_sol)**(p+1)  
+        v_powered = (current_v)**(p+1)  
         # Use numpy's trapezoid rule, a is constant
-        f1 = a * np.trapz(v_powered, x)
+        f1 = a * np.trapezoid(v_powered, x)
         
         for i in range(1, len(x)-1):
             neighbors = np.where(stars[i] == 1)[0]
-            u = old_sol[neighbors] - old_sol[i]
-            
+            u = current_v[neighbors] - current_v[i]
             laplacian = coeffs_for_second_derivative[i] @ u
-            
             # Reaction term plus global regulation: v*(a*v^p - f1)
-            v_term = (old_sol[i])**p
-            reaction = old_sol[i] * (a * v_term - f1)
-            
+            v_term = (current_v[i])**p
+            reaction = current_v[i] * (a * v_term - f1)
             # Equation update
-            sol[i] = old_sol[i] + dt * (d * laplacian + reaction)
-            
+            sol[i] = current_v[i] + dt * (d * laplacian + reaction)
+
             if np.isnan(sol[i]):
                 print(f"Step {n}, position {i}:")
                 print(f"laplacian={laplacian}, reaction={reaction}")
-                print(f"old_sol={old_sol[i]}, f1={f1}")
+                print(f"sol={current_v[i]}, f1={f1}")
                 return sol_all_data
 
         # Neumann BCs
