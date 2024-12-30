@@ -99,9 +99,6 @@ def plot_stars(x, stars):
     #     # Highlight central point of current star
     #     plt.plot(x[i], 0, 'ro', markersize=8)
     #     plt.text(x[i], 0.1, f'Point {i}')
-        
-    #     # Add small vertical offset for visualization
-    #     plt.plot(x[neighbors], np.zeros_like(neighbors), 'go', markersize=6)
     
     plt.grid(True)
     plt.title('Stars Visualization')

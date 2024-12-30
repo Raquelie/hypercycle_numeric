@@ -60,6 +60,7 @@ def solve_pde(cfg, solver, x, num_pasos, inc):
     # Time derivative loop
     for n in range(num_pasos):
         t = n * inc
+        # Exclude first and last for BC
         for i in range(1, len(x)):
             # Get neighbors from stars
             neighbors = np.where(stars[i] == 1)[0]

@@ -34,7 +34,7 @@ def load_points(file_path):
         raise
 
 
-def solve_pde(cfg, solver, x, num_pasos, inc):
+def solve_pde(cfg, solver, x, num_steps, inc):
     """Specific code for the PDE of the example
         TODO generalize with config"""
     
@@ -46,10 +46,10 @@ def solve_pde(cfg, solver, x, num_pasos, inc):
 
     # Initialize solutions
     sol = np.ones(len(x)) * cfg['equation_params']['initial_condition']
-    sol_all_data = np.zeros((num_pasos, len(x)))
+    sol_all_data = np.zeros((num_steps, len(x)))
 
     # Time derivative loop
-    for n in range(num_pasos):
+    for n in range(num_steps):
         # t = n * inc
         # Exclude 1st and last nodes for the boundary conditions
         for i in range(1, len(x)):

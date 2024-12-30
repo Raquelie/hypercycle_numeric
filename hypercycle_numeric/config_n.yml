@@ -1,0 +1,29 @@
+numerical_params:
+  num_neighbors: 2
+  num_time_steps: 60000
+  time_increment: 0.0005
+  domain:
+    start: 0
+    end: 1
+  
+weight_function:
+  type: "default"
+
+input_data:
+  path: "data/equally_spaced.txt"
+
+equation_params:
+  number_of_molecules: 3
+  p: 1.0           # growth rate exponent (from paper)
+  molecule_1:
+    d: 0.001          # diffusion coefficient (from paper)
+    a: 1.0           # reaction rate (from paper)
+    initial_condition: "0.35 + 0.15*np.cos(np.pi*x)"  # initial concentration
+  molecule_2:
+    d: 0.002          # diffusion coefficient (from paper)
+    a: 1.0           # reaction rate (from paper)
+    initial_condition: "0.357"  # initial concentration
+  molecule_3:
+    d: 0.003          # diffusion coefficient (from paper)
+    a: 1.0           # reaction rate (from paper)
+    initial_condition: "0.338-0.3*np.cos(np.pi*x)"  # initial concentration
