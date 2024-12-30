@@ -1,4 +1,4 @@
-# Autocathalitic system 
+# Hypercyclic system, spatially explicit, with n molecules
 
 ## Usage
 - Check `hypercycle_numeric/config_n.yml` for parameters. The number of molecules needs to be added as well as the constant for each of these molecules
