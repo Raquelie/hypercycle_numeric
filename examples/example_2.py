@@ -2,6 +2,7 @@ from pathlib import Path
 import numpy as np
 import yaml
 import matplotlib.pyplot as plt
+from datetime import datetime
 from gfdm.core import GFDMSolver
 
 
@@ -109,4 +110,14 @@ def run_example():
     plt.xlabel('x')
     plt.ylabel('u')
     plt.legend()
-    plt.show()
+    
+    # Create output directory if it doesn't exist
+    output_dir = Path(__file__).parent.parent / "output"
+    output_dir.mkdir(exist_ok=True)
+    
+    # Generate timestamp
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    
+    # Save plot
+    plt.savefig(output_dir / f"function_{timestamp}.png", dpi=300, bbox_inches='tight')
+    plt.close()
