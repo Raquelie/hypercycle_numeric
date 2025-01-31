@@ -1,6 +1,6 @@
 numerical_params:
   num_neighbors: 2
-  num_time_steps: 60000
+  num_time_steps: 30000
   time_increment: 0.0005
   domain:
     start: 0

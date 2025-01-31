@@ -8,8 +8,9 @@ from hypercycle_numeric.inf_hypercyclic import run_model as inf_hyper
 def main():
     # ex_1()
     # ex_2()
-    n_mol_hyper()
+    # n_mol_hyper()
     # one_molecule()
+    inf_hyper()
     
 
 if __name__ == "__main__":

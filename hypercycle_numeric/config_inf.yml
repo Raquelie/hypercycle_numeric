@@ -1,19 +1,20 @@
 numerical_params:
   num_neighbors: 2
-  num_time_steps: 60000
-  time_increment: 0.0005
-  domain:
-    start: 0
-    end: 2*pi
+  num_time_steps: 6000
+  time_increment: 0.001
+
   
 weight_function:
   type: "default"
 
 input_data:
-  path: "data/equally_spaced.txt"
+  path: "data/h.txt"
 
 equation_params:
+  start: 0
+  end: 6.2831
   alpha: 0.05 # diffusion (from paper)      
   k: 1          # mean fitness function (from paper)
   h: 0.4         # catalyzer delay (from paper)
   initial_condition: "1/(2*np.pi)*(np.sin(5*x+np.pi/4)+1)"  # initial concentration
+
