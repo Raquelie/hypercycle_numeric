@@ -34,9 +34,10 @@ Replace `<model_to_run>` with one of the available models:
 
 ## References
 
-The following research articles and resources were taken as main references in the development of this project:
 [1] Alexander S. Bratus, Olga S. Chmereva, Ivan Yegorov, and Artem S. Novozhilov. "On a hypercycle equation with infinitely many members." Journal of Mathematical Analysis and Applications, vol. 521, no. 2, 2023, p. 126988. doi: https://doi.org/10.1016/j.jmaa.2022.126988
+
 [2] Alexander S. Bratus', Vladimir P. Posvyanskii, and Artem S. Novozhilov. "Existence and stability of stationary solutions to spatially extended autocatalytic and hypercyclic systems under global regulation and with nonlinear growth rates." arXiv preprint arXiv:0901.3556, 2009.
+
 [3] Antonio M. Vargas. "Finite difference method for solving fractional differential equations at irregular meshes." Mathematics and Computers in Simulation, vol. 193, 2022, pp. 204-216. doi: https://doi.org/10.1016/j.matcom.2021.10.010
 
 
