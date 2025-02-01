@@ -1,9 +1,8 @@
 numerical_params:
   num_neighbors: 2
-  num_time_steps: 6000
-  time_increment: 0.001
+  num_time_steps: 30000
+  time_increment: 0.01
 
-  
 weight_function:
   type: "default"
 
@@ -16,5 +15,6 @@ equation_params:
   alpha: 0.05 # diffusion (from paper)      
   k: 1          # mean fitness function (from paper)
   h: 0.4         # catalyzer delay (from paper)
-  initial_condition: "1/(2*np.pi)*(np.sin(5*x+np.pi/4)+1)"  # initial concentration
+  initial_condition: "1/(2*np.pi)*(np.sin(x+np.pi/4)+1)"  # initial concentration
+  # initial_condition: "1/(2*np.pi)*(np.sin(5*x+np.pi/4)+1)"  # initial concentration
 

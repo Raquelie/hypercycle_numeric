@@ -43,21 +43,28 @@ def create_points(h, start, end, file_path):
     return full_mesh
 
 
-def get_delayed_u(u, x, h):
+def get_delayed_x(x, h):
     """Returns u(x-h) rounded to nearest mesh point"""
     delayed = x - h
-    delayed = np.where(delayed < 0, delayed + x[-1], delayed)
-    indices = np.array([np.abs(x - d).argmin() for d in delayed[:-1]])  # Exclude last point
-    indices = np.append(indices, indices[0])  # Add first index for last point
-    return u[indices]
+    indices = []
+
+    for d in delayed:
+        if d < 0:
+            idx = np.abs(x - (d + x[-1])).argmin()
+        else:
+            idx = np.abs(x - d).argmin()
+        indices.append(idx)
+
+    output_path = Path(__file__).parent.parent / 'data/delayed_mesh.txt'
+    np.savetxt(output_path, x[indices], fmt='%.4f')  # For reference 
+    return indices
 
 
-def calculate_f(params, u, x):
+def calculate_f(params, u, x, delayed_indices):
     """Calculate f = int_0^(2π) k(x)*u(x,t)*u(x-h,t) dx"""
     k = params['equation_params']['k']
     h = params['equation_params']['h']
-    delayed_u = get_delayed_u(u, x, h)
-    integrand = k * u * delayed_u
+    integrand = k * u * u[delayed_indices]
     integral = np.trapezoid(integrand, x)
     return integral
 
@@ -81,12 +88,15 @@ def solve_pde(cfg, solver, x, num_steps, dt):
     sol_all_data[0, :] = sol
     print(f"Initial max sol = {np.max(sol)}, min sol = {np.min(sol)}")
 
+    # Get delayed indices for fixed h and mesh
+    delayed_indices = get_delayed_x(x,h)
+
     for n in range(1, num_steps):
         current_u = sol.copy()
-        # This is a global term 
-        f = calculate_f(cfg, current_u, x)
-        delayed_u = get_delayed_u(current_u,x,h)
+        # f: global term 
+        f = calculate_f(cfg, current_u, x, delayed_indices)
         for i in range(1, len(x)-1):
+            delayed_u = current_u[delayed_indices]
             neighbors = np.where(stars[i] == 1)[0]
             u = current_u[neighbors] - current_u[i]
             laplacian = coeffs_for_second_derivative[i] @ u
@@ -113,7 +123,7 @@ def solve_pde(cfg, solver, x, num_steps, dt):
         sol_all_data[n, :] = sol
 
         # Data checks, because it tends to go to infinity :(
-        if n % 1 == 0: 
+        if n % 100 == 0: 
             print(f"Step {n}: max={np.max(sol):.6f}, min={np.min(sol):.6f}, f={f:.6f}")
     return sol_all_data
 
@@ -147,12 +157,14 @@ def run_model():
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    ax.plot_surface(T, X, sol, cmap='viridis')
-    ax.set_xlabel('t')
-    ax.set_ylabel('x')
-    ax.set_zlabel('v')
-    ax.set_xlim(np.max(T), 0)  # Reverse t axis direction
-    
+    ax.plot_surface(X, T, sol, cmap='viridis', antialiased=True)
+    ax.set_xlabel('x')
+    ax.set_ylabel('t')
+    ax.set_zlabel('u')
+    ax.set_xlim(np.max(X), 0)  # Reverse t axis direction
+    ax.view_init(elev=20, azim=-45)
+    ax.grid(True, alpha=0.3)
+
     # Create output directory if it doesn't exist
     output_dir = Path(__file__).parent.parent / "output"
     output_dir.mkdir(exist_ok=True)
