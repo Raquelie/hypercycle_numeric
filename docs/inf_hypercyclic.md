@@ -3,7 +3,7 @@
 ## Usage
 - Check `hypercycle_numeric/config_inf.yml` for parameters.
 - Code is in `hypercycle_numeric/inf_hypercyclic.py`
-- Run with main.py after checking the call to the function is in the file and uncommented
+- Run with main.py using the parameter `inf_hyper`
 
 ## Description
 The example aims to create a numerical simulation of the model proposed by:

@@ -3,7 +3,7 @@
 ## Usage
 - Check `hypercycle_numeric/config.yml` for parameters
 - Code is in `hypercycle_numeric/one_mol_autocathalitic.py`
-- Run with main.py after checking the call to the function is in the file and uncommented
+- Run with main.py using the parameter `one_mol_auto`
 
 ## Description
 The example aims to create a numerical simulation of the model proposed by:
@@ -23,5 +23,5 @@ And Neumann's boundary conditions.
 For the spatial derivative the GFDM method is used, where the input mesh is taken from the `data` folder according to the config. For the integral, numpy's trapezoid rule is used.
 
 ## Output
-A plot of the solution (t, x, v) is generated.
+A plot of the solution (t, x, v) is generated in the `output` folder.
 
