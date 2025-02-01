@@ -3,7 +3,7 @@
 ## Usage
 - Check `hypercycle_numeric/config_n.yml` for parameters. The number of molecules needs to be added as well as the constant for each of these molecules
 - Code is in `hypercycle_numeric/n_mol_hypercyclic.py`
-- Run with main.py after checking the call to the function is in the file and uncommented
+- Run with main.py using the parameter `n_mol_hyper`
 
 ## Description
 The example aims to create a numerical simulation of the model proposed by:
@@ -23,5 +23,5 @@ And Neumann's boundary conditions.
 For the spatial derivative the GFDM method is used, where the input mesh is taken from the `data` folder according to the config. For the integral, numpy's trapezoid rule is used.
 
 ## Output
-A plot of the solution (t, x, v) is generated for the n molecules.
+A plot of the solution (t, x, v) is generated for the n molecules in the `output` folder.
 

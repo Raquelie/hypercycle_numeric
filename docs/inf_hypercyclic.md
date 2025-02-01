@@ -3,7 +3,7 @@
 ## Usage
 - Check `hypercycle_numeric/config_inf.yml` for parameters.
 - Code is in `hypercycle_numeric/inf_hypercyclic.py`
-- Run with main.py after checking the call to the function is in the file and uncommented
+- Run with main.py using the parameter `inf_hyper`
 
 ## Description
 The example aims to create a numerical simulation of the model proposed by:
@@ -30,5 +30,5 @@ $f[u(\cdot,t)] = \int_0^{2\pi} k(x)u(x,t)u(x-h,t)\,dx \quad \forall t \geq 0$
 For the spatial derivative the GFDM method is used, where the input mesh is taken from the `data` folder according to the config. For the integral, numpy's trapezoid rule is used.
 
 ## Output
-A plot of the solution (t, x, v) is generated for the system.
+A plot of the solution (t, x, v) is generated for the system in the `output` folder.
 
