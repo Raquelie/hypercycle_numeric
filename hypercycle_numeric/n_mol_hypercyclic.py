@@ -1,6 +1,7 @@
 from pathlib import Path
 import numpy as np
 import yaml
+from datetime import datetime
 import matplotlib.pyplot as plt
 from gfdm.core import GFDMSolver
 
@@ -44,6 +45,11 @@ def plot_multiple(n_molecules, sol_all_data, x, inc, num_steps):
     # Create subplots for each molecule
     for i in range(n_molecules):
         ax = fig.add_subplot(n_rows, n_cols, i+1, projection='3d')
+
+        # Plot surface for current molecule
+        surf = ax.plot_surface(T, X, sol_all_data[i, :, :], 
+                             cmap='viridis',
+                             antialiased=True)
         
         # Plot surface for current molecule
         surf = ax.plot_surface(T, X, sol_all_data[i, :, :], 
@@ -55,9 +61,19 @@ def plot_multiple(n_molecules, sol_all_data, x, inc, num_steps):
         ax.set_ylabel('x')
         ax.set_zlabel('v')
         ax.set_title(f'Molecule {i+1}')
-        fig.colorbar(surf, ax=ax, shrink=0.5, aspect=5)
     
     plt.tight_layout(pad=3.0)
+
+        # Create output directory if it doesn't exist
+    output_dir = Path(__file__).parent.parent / "output"
+    output_dir.mkdir(exist_ok=True)
+    
+    # Generate timestamp
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    
+    # Save plot
+    plt.savefig(output_dir / f"n_mol_{timestamp}.png", dpi=300, bbox_inches='tight')
+    plt.close()
     
     return fig
 
@@ -187,7 +203,7 @@ def run_model():
 
     # 3D Plotting
     fig = plot_multiple(cfg['equation_params']['number_of_molecules'], sol, x, inc, num_steps)
-    plt.show()
+    
 
     
     

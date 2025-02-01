@@ -87,24 +87,14 @@ def plot_stars(x, stars):
     num_points = len(x)
     
     # Plot points
-    plt.plot(x, np.zeros_like(x), 'b*', label='Mesh')
+    plt.plot(x, np.zeros_like(x), 'b*', label='Data')
     plt.axhline(y=0, color='black', linewidth=0.5, linestyle='-')
-    # # Plot connections for each star
-    # for i in range(num_points):
-    #     neighbors = np.where(stars[i] == 1)[0]
-    #     for neighbor in neighbors:
-    #         # Draw line from point i to its neighbor
-    #         plt.plot([x[i], x[neighbor]], [0, 0], 'b-', alpha=0.5)
-            
-    #     # Highlight central point of current star
-    #     plt.plot(x[i], 0, 'ro', markersize=8)
-    #     plt.text(x[i], 0.1, f'Point {i}')
     
     plt.grid(True)
     plt.title('Stars Visualization')
     plt.xlabel('x')
     plt.gca().yaxis.set_visible(False)
-    plt.legend()
+    # plt.legend()
     
     # Create output directory if it doesn't exist
     output_dir = Path(__file__).parent.parent / "output"

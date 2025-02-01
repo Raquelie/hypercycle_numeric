@@ -1,6 +1,7 @@
 from pathlib import Path
 import numpy as np
 import yaml
+from datetime import datetime
 import matplotlib.pyplot as plt
 from gfdm.core import GFDMSolver
 
@@ -116,6 +117,17 @@ def run_model():
     ax.set_xlim(np.max(T), 0)  # Reverse t axis direction
     ax.set_ylim(1, 0)  # Reverse x axis direction
     # ax.set_zlim(0, 8)
-    plt.show()
+    
+    # Create output directory if it doesn't exist
+    output_dir = Path(__file__).parent.parent / "output"
+    output_dir.mkdir(exist_ok=True)
+    
+    # Generate timestamp
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    
+    # Save plot
+    plt.savefig(output_dir / f"one_mol_{timestamp}.png", dpi=300, bbox_inches='tight')
+    plt.close()
+
     
     
