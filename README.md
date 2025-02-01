@@ -2,7 +2,7 @@
 
 ## Summary
 
-Hypercycles are finite closed networks of self-replicating molecules [1]. While traditional models for hypercycles use a system of ODEs, newer research [1] [2] has shown that spatially explicit models using PDEs have an intersting behaviour. In order to numerically solve these systems, the Generalized Finite Differences Method (GFDM) is implemented to compute spatial derivatives.
+Hypercycles are finite closed networks of self-replicating molecules [1]. While traditional models for hypercycles use a system of ODEs, newer research [1] [2] has shown that spatially explicit models using PDEs have an intersting behaviour. In order to numerically solve these systems, the Generalized Finite Differences Method (GFDM) [3] is implemented to compute spatial derivatives.
 
 ## Usage
 
