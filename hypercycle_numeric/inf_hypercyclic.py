@@ -63,7 +63,6 @@ def get_delayed_x(x, h):
 def calculate_f(params, u, x, delayed_indices):
     """Calculate f = int_0^(2π) k(x)*u(x,t)*u(x-h,t) dx"""
     k = params['equation_params']['k']
-    h = params['equation_params']['h']
     integrand = k * u * u[delayed_indices]
     integral = np.trapezoid(integrand, x)
     return integral
@@ -80,7 +79,6 @@ def solve_pde(cfg, solver, x, num_steps, dt):
     # GFDM
     stars = solver.create_stars(x)
     _, coeffs_for_second_derivative = solver.build_matrices(x, stars)
-
     # Initialize solution
     ic_str = cfg['equation_params']['initial_condition']
     sol = eval(ic_str, {'np': np, 'x': x})*np.ones(len(x))
@@ -93,7 +91,7 @@ def solve_pde(cfg, solver, x, num_steps, dt):
 
     for n in range(1, num_steps):
         current_u = sol.copy()
-        # f: global term 
+        # f: global term for each t
         f = calculate_f(cfg, current_u, x, delayed_indices)
         for i in range(1, len(x)-1):
             delayed_u = current_u[delayed_indices]
@@ -114,16 +112,15 @@ def solve_pde(cfg, solver, x, num_steps, dt):
                 print(f"sol={current_u[i]}, f={f}")
                 return sol_all_data
         
+        # Neumann BCs
+        sol[-1] = 0.5*(sol[1]+sol[-2])
         # Dirichlet BCs
         sol[0] = sol[-1]
-        # Neumann BCs
-        sol[1] = sol[0]
-        sol[-2] = sol[-1]
 
         sol_all_data[n, :] = sol
 
         # Data checks, because it tends to go to infinity :(
-        if n % 100 == 0: 
+        if n % 1000 == 0: 
             print(f"Step {n}: max={np.max(sol):.6f}, min={np.min(sol):.6f}, f={f:.6f}")
     return sol_all_data
 
@@ -161,7 +158,7 @@ def run_model():
     ax.set_xlabel('x')
     ax.set_ylabel('t')
     ax.set_zlabel('u')
-    ax.set_xlim(np.max(X), 0)  # Reverse t axis direction
+    ax.set_xlim(np.max(X), 0)  # Reverse x axis direction
     ax.view_init(elev=20, azim=-45)
     ax.grid(True, alpha=0.3)
 
