@@ -7,7 +7,7 @@ weight_function:
   type: "default"
 
 input_data:
-  path: "data/h.txt"
+  path: "data/h-irreg.txt"
 
 equation_params:
   start: 0
@@ -15,6 +15,6 @@ equation_params:
   alpha: 0.05 # diffusion (from paper)      
   k: 1          # mean fitness function (from paper)
   h: 0.4         # catalyzer delay (from paper)
-  initial_condition: "1/(2*np.pi)*(np.sin(x+np.pi/4)+1)"  # initial concentration
-  # initial_condition: "1/(2*np.pi)*(np.sin(5*x+np.pi/4)+1)"  # initial concentration
+  # initial_condition: "1/(2*np.pi)*(np.sin(x+np.pi/4)+1)"  # initial concentration
+  initial_condition: "1/(2*np.pi)*(np.sin(5*x+np.pi/4)+1)"  # initial concentration
 
