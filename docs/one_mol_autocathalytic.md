@@ -1,4 +1,4 @@
-# Autocathalitic system 
+# Autocathalitic system
 
 ## Usage
 - Check `hypercycle_numeric/config.yml` for parameters
@@ -24,4 +24,3 @@ For the spatial derivative the GFDM method is used, where the input mesh is take
 
 ## Output
 A plot of the solution (t, x, v) is generated in the `output` folder.
-

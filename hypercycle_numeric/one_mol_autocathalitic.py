@@ -1,18 +1,20 @@
+from datetime import datetime
 from pathlib import Path
+
+import matplotlib.pyplot as plt
 import numpy as np
 import yaml
-from datetime import datetime
-import matplotlib.pyplot as plt
+
 from gfdm.core import GFDMSolver
 
 
 def load_config():
     """Load configuration from YAML file"""
     config_path = Path(__file__).parent / "config.yml"
-    with open(config_path, 'r') as f:
+    with open(config_path, "r") as f:
         config = yaml.safe_load(f)
     return config
-    
+
 
 def load_points(file_path):
     """Load points from data file"""
@@ -33,16 +35,16 @@ def load_points(file_path):
 def solve_pde(cfg, solver, x, num_steps, dt):
     """Solver for one molecule autocatalytic system"""
     # Setup from config
-    d = cfg['equation_params']['d']     # diffusion coefficient
-    a = cfg['equation_params']['a']     # reaction rate
-    p = cfg['equation_params']['p']     # growth exponent
-    
+    d = cfg["equation_params"]["d"]  # diffusion coefficient
+    a = cfg["equation_params"]["a"]  # reaction rate
+    p = cfg["equation_params"]["p"]  # growth exponent
+
     stars = solver.create_stars(x)
     _, coeffs_for_second_derivative = solver.build_matrices(x, stars)
 
     # Initialize solution
-    ic_str = cfg['equation_params']['initial_condition']
-    sol = eval(ic_str, {'np': np, 'x': x})*np.ones(len(x))
+    ic_str = cfg["equation_params"]["initial_condition"]
+    sol = eval(ic_str, {"np": np, "x": x}) * np.ones(len(x))
     sol_all_data = np.zeros((num_steps, len(x)))
     sol_all_data[0, :] = sol
     print(f"Initial max sol = {np.max(sol)}, min sol = {np.min(sol)}")
@@ -51,16 +53,16 @@ def solve_pde(cfg, solver, x, num_steps, dt):
         current_v = sol.copy()
         # Calculate f1(t) = int(a*v^(p+1)*dx) for x in domain
         # This is a global term
-        v_powered = (current_v)**(p+1)  
+        v_powered = (current_v) ** (p + 1)
         # Use numpy's trapezoid rule, a is constant
         f1 = a * np.trapezoid(v_powered, x)
-        
-        for i in range(1, len(x)-1):
+
+        for i in range(1, len(x) - 1):
             neighbors = np.where(stars[i] == 1)[0]
             u = current_v[neighbors] - current_v[i]
             laplacian = coeffs_for_second_derivative[i] @ u
             # Reaction term plus global regulation: v*(a*v^p - f1)
-            v_term = (current_v[i])**p
+            v_term = (current_v[i]) ** p
             reaction = current_v[i] * (a * v_term - f1)
             # Equation update
             sol[i] = current_v[i] + dt * (d * laplacian + reaction)
@@ -75,12 +77,14 @@ def solve_pde(cfg, solver, x, num_steps, dt):
         # Should have an extra node on each side! TODO: add this
         sol[0] = sol[1]
         sol[-1] = sol[-2]
-        
+
         sol_all_data[n, :] = sol
 
         # Data checks, because it tends to go to infinity :(
-        if n % 100 == 0: 
-            print(f"Step {n}: max={np.max(sol):.6f}, min={np.min(sol):.6f}, f1={f1:.6f}")
+        if n % 100 == 0:
+            print(
+                f"Step {n}: max={np.max(sol):.6f}, min={np.min(sol):.6f}, f1={f1:.6f}"
+            )
 
     return sol_all_data
 
@@ -91,15 +95,15 @@ def run_model():
     cfg = load_config()
 
     # Extract parameters
-    num_steps = cfg['numerical_params']['num_time_steps']
-    num_neighbors = cfg['numerical_params']['num_neighbors']
-    inc = cfg['numerical_params']['time_increment']
-    
+    num_steps = cfg["numerical_params"]["num_time_steps"]
+    num_neighbors = cfg["numerical_params"]["num_neighbors"]
+    inc = cfg["numerical_params"]["time_increment"]
+
     # Create solver
     solver = GFDMSolver(num_neighbors=num_neighbors)
-    
+
     # Generate points
-    x = load_points(cfg['input_data']['path'])
+    x = load_points(cfg["input_data"]["path"])
 
     # Solve PDE
     sol = solve_pde(cfg, solver, x, num_steps, inc)
@@ -109,25 +113,22 @@ def run_model():
     X, T = np.meshgrid(x, np.arange(0, T, inc))
 
     fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    ax.plot_surface(T, X, sol, cmap='viridis')
-    ax.set_xlabel('t')
-    ax.set_ylabel('x')
-    ax.set_zlabel('v')
+    ax = fig.add_subplot(111, projection="3d")
+    ax.plot_surface(T, X, sol, cmap="viridis")
+    ax.set_xlabel("t")
+    ax.set_ylabel("x")
+    ax.set_zlabel("v")
     ax.set_xlim(np.max(T), 0)  # Reverse t axis direction
     ax.set_ylim(1, 0)  # Reverse x axis direction
     # ax.set_zlim(0, 8)
-    
+
     # Create output directory if it doesn't exist
     output_dir = Path(__file__).parent.parent / "output"
     output_dir.mkdir(exist_ok=True)
-    
+
     # Generate timestamp
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    
-    # Save plot
-    plt.savefig(output_dir / f"one_mol_{timestamp}.png", dpi=300, bbox_inches='tight')
-    plt.close()
 
-    
-    
+    # Save plot
+    plt.savefig(output_dir / f"one_mol_{timestamp}.png", dpi=300, bbox_inches="tight")
+    plt.close()
