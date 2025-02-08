@@ -9,8 +9,10 @@ from utils.plotting import plot_3d
 
 def create_points(h, start, end, file_path):
     """
-    Create spatial points for the system and save full grid
-    Reads from input file_path and replicates the points up to the end of the mesh
+    Create spatial points for the system and save full grid.
+
+    Reads from input file_path and replicates the points
+    up to the end of the mesh
     """
     try:
         full_path = Path(__file__).parent.parent / file_path
@@ -19,7 +21,10 @@ def create_points(h, start, end, file_path):
         print(f"Error: Could not find data file at {full_path}")
         raise
     except ValueError:
-        print(f"Error: Problem reading data from {full_path}. Check file format.")
+        print(
+            f"Error: Problem reading data from {full_path}. \
+              Check file format."
+        )
         raise
 
     n_repetitions = int(np.ceil((end - start) / h))
@@ -42,7 +47,7 @@ def create_points(h, start, end, file_path):
 
 
 def get_delayed_x(x, h):
-    """Returns u(x-h) rounded to nearest mesh point"""
+    """Return u(x-h) rounded to nearest mesh point."""
     delayed = x - h
     indices = []
 
@@ -59,7 +64,7 @@ def get_delayed_x(x, h):
 
 
 def calculate_f(params, u, x, delayed_indices):
-    """Calculate f = int_0^(2π) k(x)*u(x,t)*u(x-h,t) dx"""
+    """Calculate f = int_0^(2π) k(x)*u(x,t)*u(x-h,t) dx."""
     k = params["equation_params"]["k"]
     integrand = k * u * u[delayed_indices]
     integral = np.trapezoid(integrand, x)
@@ -67,8 +72,7 @@ def calculate_f(params, u, x, delayed_indices):
 
 
 def solve_pde(cfg, solver, x, num_steps, dt):
-    """Solver for continous system"""
-
+    """Solve for continous system."""
     # Setup from config
     alpha = cfg["equation_params"]["alpha"]
     k = cfg["equation_params"]["k"]
@@ -121,7 +125,10 @@ def solve_pde(cfg, solver, x, num_steps, dt):
 
         # Data checks, because it tends to go to infinity :(
         if n % 1000 == 0:
-            print(f"Step {n}: max={np.max(sol):.6f}, min={np.min(sol):.6f}, f={f:.6f}")
+            print(
+                f"Step {n}: max={np.max(sol):.6f}, \
+                  min={np.min(sol):.6f}, f={f:.6f}"
+            )
     return sol_all_data
 
 
@@ -136,7 +143,6 @@ def run_model():
     4. Solve integro-differential system
     5. Create 3D visualization
     """
-
     print("\n" + "=" * 50)
     print("INFINITE HYPERCYCLE MODEL SIMULATION")
     print("=" * 50 + "\n")
@@ -173,7 +179,7 @@ def run_model():
     sol = solve_pde(cfg, solver, x, num_steps, delta_t)
 
     # 3D Plotting
-    plot_3d(num_steps, delta_t, x, sol)
+    plot_3d(num_steps, delta_t, x, sol, "inf_model")
 
     print("\n" + "=" * 50)
     print("Simulation completed successfully")

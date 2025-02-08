@@ -1,23 +1,14 @@
-from datetime import datetime
 from pathlib import Path
 
-import matplotlib.pyplot as plt
 import numpy as np
-import yaml
 
 from gfdm.core import GFDMSolver
-
-
-def load_config():
-    """Load configuration from YAML file"""
-    config_path = Path(__file__).parent / "config.yml"
-    with open(config_path, "r") as f:
-        config = yaml.safe_load(f)
-    return config
+from utils.config import load_config
+from utils.plotting import plot_3d
 
 
 def load_points(file_path):
-    """Load points from data file"""
+    """Load spatial points from data file."""
     try:
         # Get absolute path relative to current directory
         full_path = Path(__file__).parent.parent / file_path
@@ -33,7 +24,7 @@ def load_points(file_path):
 
 
 def solve_pde(cfg, solver, x, num_steps, dt):
-    """Solver for one molecule autocatalytic system"""
+    """Solve for one molecule autocatalytic system."""
     # Setup from config
     d = cfg["equation_params"]["d"]  # diffusion coefficient
     a = cfg["equation_params"]["a"]  # reaction rate
@@ -48,6 +39,8 @@ def solve_pde(cfg, solver, x, num_steps, dt):
     sol_all_data = np.zeros((num_steps, len(x)))
     sol_all_data[0, :] = sol
     print(f"Initial max sol = {np.max(sol)}, min sol = {np.min(sol)}")
+
+    print("\nSolving the system...")
 
     for n in range(1, num_steps):
         current_v = sol.copy()
@@ -90,45 +83,49 @@ def solve_pde(cfg, solver, x, num_steps, dt):
 
 
 def run_model():
-    """Run the model and plot the solution"""
+    """
+    Run the one molecule auto cathalytic model and visualize results.
+
+    Steps:
+    1. Load configuration parameters
+    2. Initialize GFDM solver
+    3. Generate spatial points
+    4. Solve integro-differential system
+    5. Create 3D visualization
+    """
+    print("\n" + "=" * 50)
+    print("ONE MOLECULE AUTO CATHALYTIC MODEL SIMULATION")
+    print("=" * 50 + "\n")
+
     # Load configuration
-    cfg = load_config()
+    config_path = Path(__file__).parent / "config.yml"
+    cfg = load_config(config_path)
 
     # Extract parameters
     num_steps = cfg["numerical_params"]["num_time_steps"]
     num_neighbors = cfg["numerical_params"]["num_neighbors"]
-    inc = cfg["numerical_params"]["time_increment"]
+    delta_t = cfg["numerical_params"]["time_increment"]
+    input_data_path = cfg["input_data"]["path"]
+
+    print("\nModel Parameters:")
+    print("-" * 20)
+    print(f"Time steps: {num_steps}")
+    print(f"Number of neighbors: {num_neighbors}")
+    print(f"Time increment: {delta_t}")
+    print(f"Input data path: {input_data_path}\n")
 
     # Create solver
     solver = GFDMSolver(num_neighbors=num_neighbors)
 
     # Generate points
-    x = load_points(cfg["input_data"]["path"])
+    x = load_points(input_data_path)
 
     # Solve PDE
-    sol = solve_pde(cfg, solver, x, num_steps, inc)
+    sol = solve_pde(cfg, solver, x, num_steps, delta_t)
 
     # 3D Plotting
-    T = inc * num_steps
-    X, T = np.meshgrid(x, np.arange(0, T, inc))
+    plot_3d(num_steps, delta_t, x, sol, "one_mol")
 
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection="3d")
-    ax.plot_surface(T, X, sol, cmap="viridis")
-    ax.set_xlabel("t")
-    ax.set_ylabel("x")
-    ax.set_zlabel("v")
-    ax.set_xlim(np.max(T), 0)  # Reverse t axis direction
-    ax.set_ylim(1, 0)  # Reverse x axis direction
-    # ax.set_zlim(0, 8)
-
-    # Create output directory if it doesn't exist
-    output_dir = Path(__file__).parent.parent / "output"
-    output_dir.mkdir(exist_ok=True)
-
-    # Generate timestamp
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-
-    # Save plot
-    plt.savefig(output_dir / f"one_mol_{timestamp}.png", dpi=300, bbox_inches="tight")
-    plt.close()
+    print("\n" + "=" * 50)
+    print("Simulation completed successfully")
+    print("=" * 50 + "\n")

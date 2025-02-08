@@ -31,6 +31,26 @@ Replace `<model_to_run>` with one of the available models:
 - `n_mol_hyper`
 - `inf_hyper`
 
+## Development
+
+### Pre-commit hooks
+
+This repository uses pre-commit hooks to ensure code quality. To set up pre-commit in your local environment:
+
+1. Install pre-commit:
+```bash
+pip install pre-commit
+```
+
+2. Install the git hooks:
+```bash
+pre-commit install
+```
+
+The pre-commit hooks will run automatically on `git commit`. They include:
+- Black (code formatting)
+- Flake8 (code style)
+- isort (import sorting)
 
 ## References
 
