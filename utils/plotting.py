@@ -39,8 +39,8 @@ def plot_3d(num_steps, delta_t, x, sol, model):
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection="3d")
-    ax.plot_surface(X, T, sol, cmap="viridis", antialiased=True)
     if model == "inf_model":
+        ax.plot_surface(X, T, sol, cmap="viridis", antialiased=True)
         ax.set_xlabel("x")
         ax.set_ylabel("t")
         ax.set_zlabel("u")
@@ -48,6 +48,7 @@ def plot_3d(num_steps, delta_t, x, sol, model):
         ax.view_init(elev=20, azim=-45)
         ax.grid(True, alpha=0.3)
     else:
+        ax.plot_surface(T, X, sol, cmap="viridis", antialiased=True)
         ax.set_xlabel("t")
         ax.set_ylabel("x")
         ax.set_zlabel("v")
