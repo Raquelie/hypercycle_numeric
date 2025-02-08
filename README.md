@@ -27,10 +27,30 @@ Replace `<model_to_run>` with one of the available models:
 
 - `example_1`
 - `example_2`
-- `one_mol_auto` 
+- `one_mol_auto`
 - `n_mol_hyper`
 - `inf_hyper`
 
+## Development
+
+### Pre-commit hooks
+
+This repository uses pre-commit hooks to ensure code quality. To set up pre-commit in your local environment:
+
+1. Install pre-commit:
+```bash
+pip install pre-commit
+```
+
+2. Install the git hooks:
+```bash
+pre-commit install
+```
+
+The pre-commit hooks will run automatically on `git commit`. They include:
+- Black (code formatting)
+- Flake8 (code style)
+- isort (import sorting)
 
 ## References
 
@@ -39,6 +59,3 @@ Replace `<model_to_run>` with one of the available models:
 [2] Alexander S. Bratus', Vladimir P. Posvyanskii, and Artem S. Novozhilov. "Existence and stability of stationary solutions to spatially extended autocatalytic and hypercyclic systems under global regulation and with nonlinear growth rates." arXiv preprint arXiv:0901.3556, 2009.
 
 [3] Antonio M. Vargas. "Finite difference method for solving fractional differential equations at irregular meshes." Mathematics and Computers in Simulation, vol. 193, 2022, pp. 204-216. doi: https://doi.org/10.1016/j.matcom.2021.10.010
-
-
-

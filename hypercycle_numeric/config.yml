@@ -1,11 +1,11 @@
 numerical_params:
   num_neighbors: 2
-  num_time_steps: 12000
+  num_time_steps: 10000
   time_increment: 0.001
   domain:
     start: 0
     end: 1
-  
+
 weight_function:
   type: "default"
 

@@ -14,7 +14,7 @@ $u_x(0) = 0, \quad u_x(L) = 0$
 For the GFDM method, the input mesh is taken from the `data` folder according to the config path.
 
 ### Output
-A plot for the stars in generated in the `output`folder. 
+A plot for the stars in generated in the `output`folder.
 A plot of the solution is generated.
 
 
@@ -30,7 +30,5 @@ The example solves $u' = g(u) = \frac{\partial^2 u}{\partial x^2} + \mu u(1-u) +
 For the GFDM method, the input mesh is taken from the `data` folder according to the config path.
 
 ### Output
-A plot for the stars in generated in the `output` folder. 
+A plot for the stars in generated in the `output` folder.
 A plot of the solution is generated along with the exact solution $u = x² e^t$.
-
-

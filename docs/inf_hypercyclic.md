@@ -31,4 +31,3 @@ For the spatial derivative the GFDM method is used, where the input mesh is take
 
 ## Output
 A plot of the solution (t, x, v) is generated for the system in the `output` folder.
-

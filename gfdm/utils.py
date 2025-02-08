@@ -1,7 +1,8 @@
-import numpy as np
-from matplotlib import pyplot as plt
 from datetime import datetime
 from pathlib import Path
+
+import numpy as np
+from matplotlib import pyplot as plt
 
 
 def create_stars(x, num_neighbors=2):
@@ -14,14 +15,14 @@ def create_stars(x, num_neighbors=2):
         distances[i] = np.inf
         neighbors = np.argpartition(distances, num_neighbors)[:num_neighbors]
         stars[i, neighbors] = 1
-    
+
     return stars
 
 
 def build_matrices(x, stars, weight_function):
     """
     Build coefficientes for first and second derivatives
-    
+
     Parameters:
     -----------
     x : array_like
@@ -30,7 +31,7 @@ def build_matrices(x, stars, weight_function):
         Binary matrix where stars[i,j] = 1 if j is in star of i
     weight_function : callable
         Function to calculate weights
-    
+
     Returns:
     --------
     coeffs_for_first_derivative : ndarray
@@ -40,31 +41,31 @@ def build_matrices(x, stars, weight_function):
     # Add 0 for the first node which is a border
     coeffs_for_first_derivative = [None]
     coeffs_for_second_derivative = [None]
-    
-    for i_node in range(1, total_nodes): # Exclude borders
+
+    for i_node in range(1, total_nodes):  # Exclude borders
         C = np.zeros((2, 2))
         cont = 0
 
         n_neighbors = stars[i_node].sum()
         w_ent = np.zeros((2, n_neighbors))
-        
+
         # Implement algorithm
         for node in range(total_nodes):
             if stars[i_node, node] == 1:
                 h = x[node] - x[i_node]
                 d = weight_function(h)
-                ent = np.array([h, h*h/2])
+                ent = np.array([h, h * h / 2])
                 w_ent[:, cont] = ent * d
                 C += np.outer(ent, ent) * d
                 cont += 1
-        
+
         # Solve the system using Cholesky
         R = np.linalg.cholesky(C)
         M = np.linalg.solve(R, np.eye(2))
         coeffs_for_derivatives = (M.T @ M) @ w_ent
-        coeffs_for_first_derivative.append(coeffs_for_derivatives[0,:])
-        coeffs_for_second_derivative.append(coeffs_for_derivatives[1,:])
-    
+        coeffs_for_first_derivative.append(coeffs_for_derivatives[0, :])
+        coeffs_for_second_derivative.append(coeffs_for_derivatives[1, :])
+
     # Add 0 for the last node which is a border
     coeffs_for_first_derivative.append(None)
     coeffs_for_second_derivative.append(None)
@@ -75,7 +76,7 @@ def build_matrices(x, stars, weight_function):
 def plot_stars(x, stars):
     """
     Plot the stars for a 1D mesh and save it with timestamp.
-    
+
     Parameters:
     -----------
     x : array_like
@@ -85,24 +86,24 @@ def plot_stars(x, stars):
     """
     plt.figure(figsize=(12, 2))
     num_points = len(x)
-    
+
     # Plot points
-    plt.plot(x, np.zeros_like(x), 'b*', label='Data')
-    plt.axhline(y=0, color='black', linewidth=0.5, linestyle='-')
-    
+    plt.plot(x, np.zeros_like(x), "b*", label="Data")
+    plt.axhline(y=0, color="black", linewidth=0.5, linestyle="-")
+
     plt.grid(True)
-    plt.title('Stars Visualization')
-    plt.xlabel('x')
+    plt.title("Stars Visualization")
+    plt.xlabel("x")
     plt.gca().yaxis.set_visible(False)
     # plt.legend()
-    
+
     # Create output directory if it doesn't exist
     output_dir = Path(__file__).parent.parent / "output"
     output_dir.mkdir(exist_ok=True)
-    
+
     # Generate timestamp
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    
+
     # Save plot
-    plt.savefig(output_dir / f"stars_{timestamp}.png", dpi=300, bbox_inches='tight')
+    plt.savefig(output_dir / f"stars_{timestamp}.png", dpi=300, bbox_inches="tight")
     plt.close()
