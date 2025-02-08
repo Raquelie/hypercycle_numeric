@@ -87,7 +87,7 @@ def run_example():
     # Extract parameters
     num_steps = cfg["numerical_params"]["num_steps"]
     num_neighbors = cfg["numerical_params"]["num_neighbors"]
-    inc = cfg["numerical_params"]["increment"]
+    delta_t = cfg["numerical_params"]["increment"]
 
     # Create solver
     solver = GFDMSolver(num_neighbors=num_neighbors)
@@ -96,11 +96,11 @@ def run_example():
     x = load_points(cfg["input_data"]["path"])
 
     # Solve PDE
-    sol = solve_pde(cfg, solver, x, num_steps, inc)
+    sol = solve_pde(cfg, solver, x, num_steps, delta_t)
 
     # 3D Plotting
-    T = inc * num_steps
-    X, T = np.meshgrid(x, np.arange(0, T, inc))
+    T = delta_t * num_steps
+    X, T = np.meshgrid(x, np.arange(0, T, delta_t))
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection="3d")
