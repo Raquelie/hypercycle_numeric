@@ -25,7 +25,7 @@ A plot of the solution is generated.
 - Run with main.py
 
 ### Description
-The example solves $u' = g(u) = \frac{\partial^2 u}{\partial x^2} + \mu u(1-u) + x² -2 -\mu x^2 (1- x² e^t)$ with an initial condition and Dirichlet boundary conditions.
+The example solves $u' = g(u) = \frac{\partial^2 u}{\partial x^2} + \mu u(1-u) + x² -2 -\mu x^2 (1- x² e^t)$ with an initial condition and boundary conditions $u(0, t) = 0$, $u(1, t)= e^t$.
 
 For the GFDM method, the input mesh is taken from the `data` folder according to the config path.
 
