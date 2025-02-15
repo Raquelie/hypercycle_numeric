@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 
 
 def create_stars(x, num_neighbors=2):
-    """Create stars for each point in x"""
+    """Create stars for each point in x."""
     num_points = len(x)
     stars = np.zeros((num_points, num_points), dtype=int)
 
@@ -21,7 +21,7 @@ def create_stars(x, num_neighbors=2):
 
 def build_matrices(x, stars, weight_function):
     """
-    Build coefficientes for first and second derivatives
+    Build coefficients for first and second derivatives.
 
     Parameters:
     -----------
@@ -85,7 +85,6 @@ def plot_stars(x, stars):
         Binary matrix where stars[i,j] = 1 if j is in star of i
     """
     plt.figure(figsize=(12, 2))
-    num_points = len(x)
 
     # Plot points
     plt.plot(x, np.zeros_like(x), "b*", label="Data")
