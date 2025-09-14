@@ -1,7 +1,8 @@
 numerical_params:
   num_neighbors: 2
-  num_time_steps: 3000
+  num_time_steps: 15000
   time_increment: 0.01
+  use_taylor_delay: False
 
 weight_function:
   type: "default"
@@ -16,4 +17,4 @@ equation_params:
   k: 1          # mean fitness function (from paper)
   h: 0.4         # catalyzer delay (from paper)
   # initial_condition: "1/(2*np.pi)*(np.sin(x+np.pi/4)+1)"  # initial concentration
-  initial_condition: "1/(2*np.pi)*(np.sin(5*x+np.pi/4)+1)"  # initial concentration
+  initial_condition: "1/(2*np.pi)*(np.sin(x+np.pi/4)+1)"  # initial concentration

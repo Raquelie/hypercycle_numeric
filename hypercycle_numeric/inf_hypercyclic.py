@@ -80,7 +80,9 @@ def solve_pde(cfg, solver, x, num_steps, dt):
 
     # GFDM
     stars = solver.create_stars(x)
-    _, coeffs_for_second_derivative = solver.build_matrices(x, stars)
+    coeffs_for_first_derivative, coeffs_for_second_derivative = solver.build_matrices(
+        x, stars
+    )
     # Initialize solution
     ic_str = cfg["equation_params"]["initial_condition"]
     sol = eval(ic_str, {"np": np, "x": x}) * np.ones(len(x))
@@ -88,21 +90,43 @@ def solve_pde(cfg, solver, x, num_steps, dt):
     sol_all_data[0, :] = sol
     print(f"Initial max sol = {np.max(sol)}, min sol = {np.min(sol)}")
 
-    # Get delayed indices for fixed h and mesh
-    delayed_indices = get_delayed_x(x, h)
+    # Get delayed indices for fixed h and mesh or use Taylor expansion
+    use_taylor_delay = cfg["numerical_params"].get("use_taylor_delay", False)
+    if use_taylor_delay:
+        delayed_indices = None  # Not used in Taylor mode
+    else:
+        delayed_indices = get_delayed_x(x, h)
 
     print("\nSolving the system...")
 
     for n in range(1, num_steps):
         current_u = sol.copy()
-        # f: global term for each t
-        f = calculate_f(cfg, current_u, x, delayed_indices)
+        # Calculate derivatives once per time step
+        u_x = np.zeros_like(current_u)
+        u_xx = np.zeros_like(current_u)
         for i in range(1, len(x) - 1):
-            delayed_u = current_u[delayed_indices]
             neighbors = np.where(stars[i] == 1)[0]
-            u = current_u[neighbors] - current_u[i]
-            laplacian = coeffs_for_second_derivative[i] @ u
-            # Diffusion: alpha * laplacian
+            u_x[i] = coeffs_for_first_derivative[i] @ (
+                current_u[neighbors] - current_u[i]
+            )
+            u_xx[i] = coeffs_for_second_derivative[i] @ (
+                current_u[neighbors] - current_u[i]
+            )
+
+        if use_taylor_delay:
+            # Use Taylor expansion for delay
+            delayed_u = current_u - h * u_x + 0.5 * h**2 * u_xx
+            k = cfg["equation_params"]["k"]
+            integrand = k * current_u * delayed_u
+            f = np.trapezoid(integrand, x)
+        else:
+            f = calculate_f(cfg, current_u, x, delayed_indices)
+            delayed_u = current_u[delayed_indices]
+
+        for i in range(1, len(x) - 1):
+            neighbors = np.where(stars[i] == 1)[0]
+            # Use already computed second derivative
+            laplacian = u_xx[i]
             diff = alpha * laplacian
             # Reaction: k*u(x-h)-f
             delayed_term = k * delayed_u[i]
